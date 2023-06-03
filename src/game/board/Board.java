@@ -14,6 +14,8 @@ public class Board {
     private int quantX, quantY, limX, limY, students, bugs;
     private Robot  walker, pawn, rook, bishop, knight, king, queen;
 
+    private boolean gameOn;
+
     private List<Cell> cellsList = new ArrayList<>();
     private List<Robot> piecesList = new ArrayList<>();
     private List<Entity> studentsList = new ArrayList<>();
@@ -21,6 +23,8 @@ public class Board {
     
 
     public Board(int x, int y, int students, int bugs) {
+
+        this.gameOn = true;
         
         this.quantX = x;
         this.quantY = y;
@@ -31,41 +35,39 @@ public class Board {
         this.bugs = bugs;
 
         createCells();
-        createEntitys(students, bugs);
+        createEntities(students, bugs);
         createPieces();
     }
 
-    private void createEntitys(int students, int bugs) {
-        Set<Integer> ocupatedCells = new HashSet<>();
+    private void createEntities(int students, int bugs) {
+        Set<Integer> occupiedCells = new HashSet<>();
         Random random = new Random();
         int randomNumber = 0;
-        int lim = (quantX)*(quantY*1/2)+1;
+        int lim = (quantX)*((quantY*1/2)+1);
 
-        System.out.println(lim);
-
-        while (ocupatedCells.size() < bugs) {
+        while (occupiedCells.size() < bugs) {
 
            do {
 
                 randomNumber = random.nextInt(lim);
 
-            }  while(ocupatedCells.contains(randomNumber));
+            }  while(occupiedCells.contains(randomNumber));
 
-            ocupatedCells.add(randomNumber);
+            occupiedCells.add(randomNumber);
 
             Entity bug = new Bug(randomNumber);
             bugsList.add(bug);
             cellsList.get(randomNumber).addEntity(bug);
         }
 
-        while (ocupatedCells.size() < bugs+students) {      
+        while (occupiedCells.size() < bugs+students) {      
 
             do {
                 randomNumber = random.nextInt(lim);
 
-            }while(ocupatedCells.contains(randomNumber));
+            }while(occupiedCells.contains(randomNumber));
 
-            ocupatedCells.add(randomNumber);
+            occupiedCells.add(randomNumber);
 
             Entity student = new Student(randomNumber);
             studentsList.add(student);
@@ -75,13 +77,13 @@ public class Board {
     
     private void createPieces() {
         Robot[] pieces = {
-            new Walker(0, quantY),
-            new Pawn(0, quantY),
-            new Rook(0, quantY),
-            new Bishop(0, quantY),
-            new Knight(0, quantY),
-            new King(0, quantY),
-            new Queen(0, quantY)
+            walker = new Walker(1, quantY),
+            pawn = new Pawn(2, quantY),
+            rook = new Rook(3, quantY),
+            bishop = new Bishop(4, quantY),
+            knight = new Knight(5, quantY),
+            king = new King(6, quantY),
+            queen = new Queen(7, quantY)
         };
     
         for (Robot piece : pieces) {
@@ -101,8 +103,6 @@ public class Board {
             }
         }
     }
-
-    //#region gets of piecesList
 
     public Robot getWalker() {
         return walker;
@@ -132,40 +132,54 @@ public class Board {
         return queen;
     }
 
-    //#endregion
+    public boolean getSituation() {
+        return gameOn;
+    }
 
     public void walk(Robot piece, Board board, int moves) {
-
-        int initialCell = ((piece.getY()*quantX)+piece.getX()),
-        initialX = (initialCell%quantX),
-        initialY = (initialCell/quantX),
-        destiny = piece.move(initialX, initialY, moves, quantX, quantY);
-
+        int initialCell = piece.getY() * quantX + piece.getX();
+        int initialX = initialCell % quantX;
+        int initialY = initialCell / quantX;
+        int destiny = piece.move(initialX, initialY, moves, quantX, quantY);
+    
         if (destiny == 0) {
             return;
         }
-
+    
         board.clear();
         board.draw();
         board.delay(1);
-
+    
         moves = Math.abs(moves);
-        
-        for(int aux = 0, auxB = 0; aux < moves; aux++, auxB += destiny) {
-
-            if (aux != (moves)) {
-                cellsList.get(initialCell-auxB).removePiece(piece);
+        piece.changeState();
+    
+        for (int aux = 0, auxB = 0; aux < moves; aux++, auxB += destiny) {
+            if (aux != moves) {
+                cellsList.get(initialCell - auxB).removePiece(piece);
             }
     
-            cellsList.get(initialCell-auxB-destiny).addPiece(piece);
-                
+            if (aux == moves - 1) {
+                piece.changeState();
+            }
+    
+            cellsList.get(initialCell - auxB - destiny).addPiece(piece);
+    
             board.clear();
             board.draw();
             board.delay(1);
         }
-    }
 
-    //#region drawing
+        int atualCell = piece.getY() * quantX + piece.getX();
+
+        if(cellsList.get(atualCell).hasEntity()) {
+            studentsList.remove(studentsList.size()-1);
+        }
+
+        if(studentsList.isEmpty()) {
+            this.gameOn = false;
+        }
+        
+    }
 
     public void draw() {
         for (int y = 1; y <= limY; y++) {
@@ -207,7 +221,17 @@ public class Board {
 
                 for (Cell cell : cellsList) {
                     if (cell.getPositionX() == cellX && cell.getPositionY() == cellY) {
-                        System.out.print((char)27 + "[36m");
+
+                        if(cell.hasRobot()) {
+                            System.out.print((char)27 + "[36m");
+                        } else if (cell.hasEntity()) {
+                            if(cell.getSymbol() == '■') {
+                                System.out.print((char)27 + "[32m");
+                            } else {
+                                System.out.print((char)27 + "[31m");
+                            }
+                        }
+                        
                         System.out.print(cell.getSymbol());
                         System.out.print((char)27 + "[39m");
                     }
@@ -232,5 +256,5 @@ public class Board {
         System.out.print("\033[H\033[2J");  
         System.out.flush();
     }
-    //#endregion
+
 }

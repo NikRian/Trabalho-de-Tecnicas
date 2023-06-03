@@ -3,13 +3,16 @@ package game.pieces.robots;
 public abstract class Robot {
 
     private char symbol;
-    private int id, X, Y;
+    private boolean walking;
+    private int id, X, Y, points;
 
     public Robot(int id, char symbol, int X, int Y) {
         this.symbol = symbol;
+        this.walking = false;
         this.id = id;
         this.X = --X;
         this.Y = --Y;
+        this.points = 0;
     }
 
     public int move (int initialX, int initialY, int moves, int limX, int limY) {
@@ -18,23 +21,23 @@ public abstract class Robot {
 
         this.move(initialX, initialY, moves, limX, limY);
 
-        /*if (this instanceof Walker) {
-           destiny =  ((Walker) this).move(initialX, initialY, moves, limX, limY);
-        } else if (this instanceof Pawn) {
-            destiny =  ((Pawn) this).move(initialX, initialY, moves, limX, limY);
-        } else if (this instanceof Rook) {
-            destiny =  ((Rook) this).move(initialX, initialY, moves, limX, limY);
-        } else if (this instanceof Bishop) {
-            destiny =  ((Bishop) this).move(initialX, initialY, moves, limX, limY);
-        } else if (this instanceof Knight) {
-            destiny =  ((Knight) this).move(initialX, initialY, moves, limX, limY);
-        } else if (this instanceof King) {
-            destiny =  ((King) this).move(initialX, initialY, moves, limX, limY);
-        } else if (this instanceof Queen) {
-            destiny =  ((Queen) this).move(initialX, initialY, moves, limX, limY);
-        }*/
-
         return destiny;
+    }
+
+    public void addPoints(int points) {
+        this.points += points;
+    }
+
+    public boolean getState() {
+        return walking;
+    }
+
+    public void changeState() {
+        this.walking = !this.walking;
+    }
+
+    public int getPoints() {
+        return points;
     }
 
     public int getId() {

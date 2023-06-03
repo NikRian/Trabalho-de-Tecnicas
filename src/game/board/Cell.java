@@ -29,6 +29,10 @@ public class Cell {
 		return hasRobot;
 	}
 
+	public boolean hasEntity() {
+		return hasEntity;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -48,6 +52,18 @@ public class Cell {
 		} else {
 			this.symbol = '@';
 		}
+
+		if(!hasEntity || piece.getState()) {
+			return;
+		}
+
+		if(entity.getType() == 1) {
+			piece.addPoints(entity.getPoints());
+		} else {
+			piece.addPoints(entity.getPoints());
+			this.entity = null;
+			this.hasEntity = false;
+		}
 		
     }
 
@@ -60,7 +76,7 @@ public class Cell {
 			this.symbol = ' ';
 			
 			if (hasEntity) {
-				this.symbol = getSymbol();
+				this.symbol = entity.getSymbol();
 			}
 			
 		} else {
