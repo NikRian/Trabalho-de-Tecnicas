@@ -194,14 +194,6 @@ public class Game {
         board = new Board(X, Y, students, bugs);
     }
 
-    private void delay(int time) {
-        try {
-            Thread.sleep(time * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void clear() {
         System.out.print("\033[H\033[2J");  
         System.out.flush();
