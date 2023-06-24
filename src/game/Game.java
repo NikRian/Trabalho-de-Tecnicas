@@ -2,8 +2,8 @@ package game;
 
 import java.util.Scanner;
 
-import game.pieces.robots.Robot;
-import game.board.Board;
+import game.logic.pieces.robots.Robot;
+import game.logic.board.Board;
 
 public class Game {
 
