@@ -1,4 +1,4 @@
-package game;
+/*package game;
 
 import java.util.Scanner;
 
@@ -14,10 +14,7 @@ public class Game {
     
     public Game() {
         this.input = new Scanner(System.in);
-        board = null;
-
-        start();
-        
+        board = null;        
     }
 
     private void start() {
@@ -44,14 +41,6 @@ public class Game {
 
         createBoard();
         createReferences();
-
-        clear();
-
-        board.draw();
-
-        actions();
-
-        endGame();
     }
 
     private void endGame() {
@@ -192,11 +181,14 @@ public class Game {
         }while(!ok);
 
         board = new Board(X, Y, students, bugs);
+
+        
     }
 
     private void clear() {
         System.out.print("\033[H\033[2J");  
         System.out.flush();
     }
-}
 
+}
+*/
