@@ -43,47 +43,6 @@ public class Cell {
 		this.symbol = entity.getSymbol();
     }
 
-	public void addPiece(Robot piece) {
-        pieces.add(piece);
-		this.hasRobot = true;
-
-		if(pieces.size() == 1) {
-			this.symbol = piece.getSymbol();
-		} else {
-			this.symbol = '@';
-		}
-
-		if(!hasEntity || piece.getState()) {
-			return;
-		}
-
-		if(entity.getType() == 1) {
-			piece.addPoints(entity.getPoints());
-		} else {
-			piece.addPoints(entity.getPoints());
-			this.entity = null;
-			this.hasEntity = false;
-		}
-		
-    }
-
-	public void removePiece(Robot piece) {
-		pieces.remove(piece);
-		
-		if (pieces.isEmpty()) {
-
-			this.hasRobot = false;
-			this.symbol = ' ';
-			
-			if (hasEntity) {
-				this.symbol = entity.getSymbol();
-			}
-			
-		} else {
-			this.symbol = pieces.get(pieces.size()-1).getSymbol();
-		}
-	}
-
 	public List<Robot> getPieces() {
 		return pieces;
 	}
